@@ -1,0 +1,32 @@
+{
+  "name": "DLewis Apps",
+  "identifier": "me.dlewis.feather-repo",
+  "subtitle": "Custom iOS apps by Dylan Lewis",
+  "iconURL": "https://lume.dlewis.me/icon.svg",
+  "headerURL": "",
+  "website": "https://lume.dlewis.me",
+  "tintColor": "2563eb",
+  "featuredApps": ["me.dlewis.offlineiptv"],
+  "apps": [
+    {
+      "name": "OfflineIPTV",
+      "bundleIdentifier": "me.dlewis.offlineiptv",
+      "developerName": "Dylan Lewis",
+      "subtitle": "Resumable VOD downloader that survives 509 rate-limiting",
+      "localizedDescription": "A native iOS IPTV VOD downloader with a resumable download engine. Survives HTTP 509 rate-limiting by detecting transient errors, backing off with Retry-After headers, and resuming from the exact byte using Range requests with ETag/If-Range validation. Downloads persist across app restarts via SwiftData checkpointing.",
+      "iconURL": "https://lume.dlewis.me/icon.svg",
+      "tintColor": "2563eb",
+      "screenshotURLs": [],
+      "versions": [
+        {
+          "version": "0.1.0",
+          "date": "2026-07-08",
+          "downloadURL": "https://github.com/dylanl321/iptv-vod-downloader/releases/download/v0.1.0/OfflineIPTV-iOS-Sideload.ipa",
+          "size": 35950571,
+          "minOSVersion": "17.0"
+        }
+      ]
+    }
+  ],
+  "news": []
+}

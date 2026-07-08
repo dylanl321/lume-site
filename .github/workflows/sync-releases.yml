@@ -1,0 +1,78 @@
+name: Sync Releases to Feather Repo
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Check every 15 min
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch latest releases and update repo.json
+        run: |
+          python3 << 'EOF'
+          import json, urllib.request
+          from datetime import datetime
+
+          # Fetch latest release from iptv-vod-downloader
+          req = urllib.request.Request(
+              'https://api.github.com/repos/dylanl321/iptv-vod-downloader/releases/latest',
+              headers={'Accept': 'application/vnd.github.v3+json'}
+          )
+          
+          try:
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  release = json.loads(r.read())
+          except Exception as e:
+              print(f"No release found or error: {e}")
+              exit(0)
+
+          # Find .ipa asset
+          ipa = next((a for a in release.get('assets', []) if a['name'].endswith('.ipa')), None)
+          if not ipa:
+              print("No .ipa asset in latest release")
+              exit(0)
+
+          version = release['tag_name'].lstrip('v')
+          date = release['published_at'][:10]
+
+          # Load current repo.json
+          with open('repo.json', 'r') as f:
+              repo = json.load(f)
+
+          # Update OfflineIPTV
+          for app in repo['apps']:
+              if app['bundleIdentifier'] == 'me.dlewis.offlineiptv':
+                  existing_versions = [v['version'] for v in app['versions']]
+                  if version not in existing_versions:
+                      app['versions'].insert(0, {
+                          "version": version,
+                          "date": date,
+                          "downloadURL": ipa['browser_download_url'],
+                          "size": ipa['size'],
+                          "minOSVersion": "17.0"
+                      })
+                      print(f"Added version {version}")
+                  else:
+                      print(f"Version {version} already exists, no update needed")
+                      exit(0)
+                  break
+
+          with open('repo.json', 'w') as f:
+              json.dump(repo, f, indent=2)
+              f.write('\n')
+          
+          print("repo.json updated")
+          EOF
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add repo.json
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "Auto-update: sync latest OfflineIPTV release"
+          git push
