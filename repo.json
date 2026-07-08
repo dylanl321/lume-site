@@ -2,7 +2,7 @@
   "name": "DLewis Apps",
   "subtitle": "Custom iOS apps by Dylan Lewis",
   "description": "Sideload-ready iOS apps. Includes OfflineIPTV — a resumable VOD downloader that survives HTTP 509 rate-limiting.",
-  "iconURL": "https://lume.dlewis.me/icon.png",
+  "iconURL": "https://lume.dlewis.me/repo-icon.png",
   "website": "https://lume.dlewis.me",
   "tintColor": "#2563eb",
   "featuredApps": [
